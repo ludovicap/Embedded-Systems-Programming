@@ -16,6 +16,15 @@ A discrete PID controller processes real-time distance measurements, while a Fin
 
 The firmware is written in C, with a focus on low-level peripheral configuration, interrupt-driven operations, and real-time control.
 
+
+## 🎥 Project Demonstration
+
+Watch the experimental demonstration of our
+STM32-based Adaptive Cruise Control system.
+
+[▶ Watch the Demo](https://github.com/ludovicap/Embedded-Systems-Programming/releases/download/v1.0.0/videodimostrativo.mov)
+
+
 ⚙️ How It Works
 
 The control loop follows five main steps:
