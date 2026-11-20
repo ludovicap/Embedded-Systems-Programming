@@ -1,154 +1,125 @@
 # Embedded-Systems-Programming
 
-Adaptive Cruise Control (ACC) – STM32F446RE
+🚗 Adaptive Cruise Control | STM32
 
-Project Overview
+A real-time embedded control system for autonomous distance regulation using STM32F446RE and PID control.
 
-This project focuses on the design and implementation of an Adaptive Cruise Control (ACC) system for a robotic vehicle based on the STM32F446RE microcontroller.
+⸻
 
-The system automatically adjusts the vehicle’s movement according to the distance from an obstacle, using a PID (Proportional–Integral–Derivative) controller.
+📌 Overview
 
-The main objective is to maintain a predefined reference distance by dynamically adjusting the vehicle’s speed and direction in response to changes in the obstacle’s position.
+This project presents the development of an Adaptive Cruise Control (ACC) system implemented on an STM32F446RE microcontroller.
 
-The firmware is developed in C using STM32CubeIDE, with hardware peripherals primarily configured and managed through direct register-level programming.
+The system enables a robotic vehicle to automatically adjust its speed and direction to maintain a desired distance from an obstacle.
 
-Hardware Components
+A discrete PID controller processes real-time distance measurements, while a Finite State Machine (FSM) manages forward movement, backward movement, and stopping.
 
-The system consists of the following components:
+The firmware is written in C, with a focus on low-level peripheral configuration, interrupt-driven operations, and real-time control.
 
-* STM32F446RE – Microcontroller responsible for data acquisition, processing, and system control.
-* HC-SR04 – Ultrasonic sensor used for distance measurement.
-* L293D – Motor driver used to control the DC motors.
-* DC Motors – Actuators responsible for vehicle movement.
-* Battery Power Supply – Enables autonomous operation without a continuous connection to a computer.
+⚙️ How It Works
 
-System Architecture
+The control loop follows five main steps:
 
-The control system operates through the following stages:
+Distance Sensing → Error Calculation → PID Control → PWM Generation → Motor Actuation
 
-1. Distance Measurement: The HC-SR04 ultrasonic sensor measures the distance between the vehicle and the obstacle.
-2. Error Calculation: The measured distance is compared with the desired reference distance.
-3. PID Control: The controller processes the error and calculates the control output.
-4. Motor Control: The control output is converted into a PWM signal to regulate motor speed.
-5. Data Logging: The main system variables are stored in the microcontroller’s internal Flash memory.
+1. The HC-SR04 ultrasonic sensor measures the distance to an obstacle.
+2. The measured distance is compared with a predefined reference.
+3. The PID controller calculates the required control action.
+4. PWM signals regulate the speed of the DC motors.
+5. The FSM determines the appropriate movement direction.
 
-The overall operation is coordinated by a Finite State Machine (FSM) with three operating states:
+Finite State Machine
 
-* ACC_STOP – Vehicle stopped.
-* ACC_FORWARD – Forward movement.
-* ACC_BACKWARD – Backward movement.
+State	Behavior
+ACC_FORWARD	Moves toward the obstacle
+ACC_STOP	Stops when the target distance is reached
+ACC_BACKWARD	Moves away from the obstacle
 
-STM32 Peripherals
+🔧 Hardware Setup
 
-GPIO
+Component	Purpose
+STM32F446RE	Main processing and control unit
+HC-SR04	Ultrasonic distance measurement
+L293D	DC motor driver
+DC Motors	Vehicle actuation
+Battery Supply	Standalone operation
 
-Digital input/output pins are configured to interface with the ultrasonic sensor and control the motor driver.
+💻 Firmware & Peripherals
 
-Hardware Timers
+The firmware integrates several STM32 hardware resources:
 
-Hardware timers are used for:
+* GPIO – Sensor interfacing and motor direction control
+* Timers – PWM generation, timing, and periodic sampling
+* Interrupts – Event-driven hardware management
+* USART – Serial data communication
+* Internal Flash – Persistent storage of experimental measurements
 
-* PWM signal generation.
-* Ultrasonic sensor timing measurements.
-* System timing and periodic sampling.
+Peripheral management is primarily implemented through direct register-level programming.
 
-Interrupts
+📊 Data Logging & Analysis
 
-Hardware interrupts are used to handle time-sensitive events, reducing the need for blocking operations during firmware execution.
+The system includes a data acquisition framework for evaluating controller performance.
 
-PWM (Pulse Width Modulation)
+During operation, measurements are stored in the STM32’s internal Flash memory, allowing the vehicle to operate independently from the computer.
 
-PWM signals regulate the effective voltage applied to the DC motors, allowing the system to adjust vehicle speed.
+After each experiment, the recorded data can be retrieved through USART and processed using Python.
 
-USART Communication
+Recorded variables:
 
-The USART peripheral provides serial communication between the STM32 microcontroller and a computer for transferring recorded data.
+time_ms · distance · error · uk · pwm · state
 
-Internal Flash Memory
+Python tools:
 
-System measurements are stored in the microcontroller’s internal Flash memory.
+* pyserial – Serial data acquisition
+* csv – Data export
+* matplotlib – Experimental data visualization
 
-This allows data to be preserved even when the system is powered off and retrieved later for analysis.
+The resulting plots support the analysis of the vehicle’s dynamic response and the experimental tuning of the PID controller.
 
-PID Controller
+🧪 Experimental Validation
 
-The vehicle movement is regulated by a discrete-time PID controller.
+The system is tested under different obstacle movements to evaluate its ability to maintain the reference distance.
 
-The control error is defined as:
+The experimental sequence includes:
 
-[
-e(k) = d(k) - d_{ref}
-]
+1. Approaching a stationary obstacle.
+2. Stopping near the desired reference distance.
+3. Following an obstacle moving away.
+4. Moving backward when the obstacle approaches.
 
-where:
+These tests provide insight into the controller’s responsiveness, stability, and tracking performance.
 
-* (d(k)) is the measured distance.
-* (d_{ref}) is the desired reference distance.
-* (e(k)) is the control error at the current sampling instant.
+🛠️ Tech Stack
 
-The PID controller calculates the control signal required to reduce the error and maintain the desired distance.
+Embedded Development
 
-Controller parameters are tuned experimentally by analyzing the vehicle’s response to changes in the obstacle’s position.
+C · STM32CubeIDE · STM32F446RE · Register-Level Programming
 
-Data Acquisition and Analysis
+Control & Hardware
 
-During operation, the firmware records the main system variables:
+PID · FSM · PWM · Timers · Interrupts · USART · Flash Memory
 
-Variable	Description
-time_ms	Sampling timestamp in milliseconds
-distance	Measured distance
-error	Error relative to the reference distance
-uk	PID controller output
-pwm	PWM command applied to the motors
-state	Current FSM operating state
+Data Analysis
 
-Data samples are stored in binary format in internal Flash memory, avoiding text conversion during real-time control execution.
+Python · PySerial · CSV · Matplotlib
 
-After the experiment, the recorded data is transferred to a computer via USART and processed using a Python script.
+⸻
 
-The Python script uses:
+🎯 Project Goals
 
-* pyserial for serial communication.
-* csv for exporting the recorded measurements.
-* matplotlib for data visualization.
+* Develop a real-time embedded control application.
+* Implement a discrete PID controller for distance regulation.
+* Interface sensors and actuators through STM32 peripherals.
+* Manage hardware events using interrupts.
+* Implement persistent data logging.
+* Analyze experimental results using Python.
 
-The resulting plots allow the analysis of distance measurements, control error, PID output, and PWM commands.
+⸻
 
-Experimental Procedure
+📚 Documentation
 
-The system is evaluated through a sequence of experimental tests:
+Detailed information about the system architecture, firmware implementation, peripheral configuration, and experimental results is available in the project documentation.
 
-1. The vehicle approaches a stationary obstacle.
-2. When the reference distance is reached, the controller adjusts the motor commands until the vehicle stops.
-3. The obstacle is moved forward, and the vehicle responds by moving forward to restore the desired distance.
-4. The obstacle is moved closer, and the vehicle responds by moving backward.
+⸻
 
-The recorded measurements are used to evaluate the dynamic response of the system and support PID parameter tuning.
-
-Technologies and Development Tools
-
-* Programming Language: C
-* Microcontroller: STM32F446RE
-* Development Environment: STM32CubeIDE
-* Embedded Programming: Register-level peripheral configuration
-* Control Strategy: Discrete PID and Finite State Machine
-* Motor Control: PWM
-* Communication Interface: USART
-* Data Storage: Internal Flash memory
-* Data Processing: Python, PySerial, CSV, Matplotlib
-
-Educational Objectives
-
-The project was developed to explore the design and implementation of embedded control systems, with particular emphasis on:
-
-* STM32 peripheral configuration and register-level programming.
-* Hardware timer and interrupt management.
-* Real-time digital control implementation.
-* DC motor control using PWM.
-* Persistent data logging in internal Flash memory.
-* Serial communication between embedded hardware and a computer.
-* Experimental analysis and tuning of a PID controller.
-
-Documentation
-
-The complete technical documentation provides further details about the hardware and software architecture, peripheral configuration, implementation choices, and experimental evaluation of the control system.
+Embedded Systems Project | STM32F446RE · PID Control · Real-Time Systems
